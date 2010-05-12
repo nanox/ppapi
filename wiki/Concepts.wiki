@@ -2,6 +2,7 @@
 
 = Interfaces =
 
+The basic concept of PPAPI is the _interface._
 
 = Loading and identifying a plugin =
 
@@ -17,6 +18,8 @@ A `PP_Var` containing a string or an object is reference counted, with the objec
 It is legal to call `AddRef` and `Release` on any type of var. But since boolean and numeric types are "inline" inside the var, there is no extra memory management required.
 
 *Important:* JavaScript objects can have references to other JavaScript objects. Keeping a reference to one object can in turn keep many other objects alive. For example, a plugin might have a reference to a simple callback object. But that object may have a reference to an object in the DOM. Keeping the reference to the callback object alive can in turn cause a leak of the entire DOM of the page.
+
+In the C++ API, the `pp:Var` object acts like a smart pointer. The reference count will be automatically maintained for you, and the object or string will be alive as long as there is a `pp::Var` referencing it.
 
 === Numbers in PP_Var ===
 
