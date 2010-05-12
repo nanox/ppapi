@@ -12,7 +12,7 @@ Both the plugin and the browser expose a `void* GetInterface(const char* name)` 
 
 A plugin is identified my a `PP_Module`. This corresponds to one time a plugin library is loaded into a browser. There might be multiple plugins of different types loaded at the same time.
 
-A `PP_Instance` identifies one instance of a plugin, which is one time the page specifies `&lt;embed&gt;`. There may be several instances of a plugin on a page. In this case, there will be one "module" and several "instances" within that module. If a plugin is used across several pages, it is up to the browser whether it loads one global module with many instances, or separate modules for each page. In Google Chrome, for example, there will be one separate module for each renderer process, which may in turn correspond to one tab, or multiple tabs, depending on the [http://www.chromium.org/developers/design-documents/process-models process model] and how the tabs were opened.
+A `PP_Instance` identifies one instance of a plugin, which is one time the page specifies `<embed>`. There may be several instances of a plugin on a page. In this case, there will be one "module" and several "instances" within that module. If a plugin is used across several pages, it is up to the browser whether it loads one global module with many instances, or separate modules for each page. In Google Chrome, for example, there will be one separate module for each renderer process, which may in turn correspond to one tab, or multiple tabs, depending on the [http://www.chromium.org/developers/design-documents/process-models process model] and how the tabs were opened.
 
 = PP_Var =
 
