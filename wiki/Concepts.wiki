@@ -2,14 +2,18 @@
 
 = Interfaces =
 
-The basic concept of PPAPI is the _interface._
+The basic concept of PPAPI is the _interface._ In C, this is just a collection of function pointers associated with some similar concept. Interfaces are identified by a name, and should remain stable over time. If additions are necessary in the future, they can be added by creating a "Interface2" with the additions.
+
+This scheme allows the browser and the plugin to implement different capabilities and versions of interfaces over time. For example, a plugin may want clipboard functionality provided on a `Clipboard` interface. If the browser supports working with the clipboard, it will return a pointer to the associated function pointers when queried with the interface name. If it doesn't support such operations, it will return NULL and the plugin will have to degrade. Likewise, a plugin may prefer a newer function on a `Clipboard2` interface. When run under an older browser, only `Clipboard` might be available and the plugin will have to make do.
+
+Both the plugin and the browser expose a `void* GetInterface(const char* name)` function for the other to call.
 
 = Loading and identifying a plugin =
 
 
 = PP_Var =
 
-A `PP_Var` represents an object for binding to JavaScript or the DOM. It can represent boolean types, numeric values, strings, and generic JavaScript-type objects. It can be most convenient to think of a `PP_Var` as a JavaScript variable, which doesn't have a predefined type associated with it.
+A `PP_Var` represents an object for binding to !JavaScript or the DOM. It can represent boolean types, numeric values, strings, and generic !JavaScript-type objects. It can be most convenient to think of a `PP_Var` as a !JavaScript variable, which doesn't have a predefined type associated with it.
 
 === PP_Var lifetimes ===
 
@@ -17,13 +21,13 @@ A `PP_Var` containing a string or an object is reference counted, with the objec
 
 It is legal to call `AddRef` and `Release` on any type of var. But since boolean and numeric types are "inline" inside the var, there is no extra memory management required.
 
-*Important:* JavaScript objects can have references to other JavaScript objects. Keeping a reference to one object can in turn keep many other objects alive. For example, a plugin might have a reference to a simple callback object. But that object may have a reference to an object in the DOM. Keeping the reference to the callback object alive can in turn cause a leak of the entire DOM of the page.
+*Important:* !JavaScript objects can have references to other !JavaScript objects. Keeping a reference to one object can in turn keep many other objects alive. For example, a plugin might have a reference to a simple callback object. But that object may have a reference to an object in the DOM. Keeping the reference to the callback object alive can in turn cause a leak of the entire DOM of the page.
 
 In the C++ API, the `pp:Var` object acts like a smart pointer. The reference count will be automatically maintained for you, and the object or string will be alive as long as there is a `pp::Var` referencing it.
 
 === Numbers in PP_Var ===
 
-JavaScript does not distinguish between floating point numbers an integers. In practice, JavaScript libraries implement types as an optimization, but particular behavior is not guaranteed, and the type (double vs. int) may depend on the sequence of operations used to compute the value.
+!JavaScript does not distinguish between floating point numbers an integers. In practice, !JavaScript libraries implement types as an optimization, but particular behavior is not guaranteed, and the type (double vs. int) may depend on the sequence of operations used to compute the value.
 
 As a result, a plugin should not assume that a particular numeric value is an integer or a double, but should be prepared to handle results in either type and convert as necessary.
 
@@ -33,11 +37,11 @@ A string is a sequence of UTF-8 characters. It is reference counted as described
 
 === Objects in PP_Var ===
 
-Objects in variants are references to JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object.
+Objects in variants are references to !JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object.
 
 = PP_Resource =
 
-While a `PP_Var' represents a JavaScript object or value, a resource represents an object managed exclusively within the plugin layer. Examples include audio devices, images, and drawing contexts. The resource value is an opaque handle assigned by the browser that identifies the object.
+While a `PP_Var' represents a !JavaScript object or value, a resource represents an object managed exclusively within the plugin layer. Examples include audio devices, images, and drawing contexts. The resource value is an opaque handle assigned by the browser that identifies the object.
 
 A resource is reference counted much like a `PP_Var'. The browser will keep the object alive so long as the reference count is nonzero. When the reference count reaches zero, it will be deleted.
 
