@@ -17,10 +17,10 @@ A resource is reference counted much like a `PP_Var'. The browser will keep the 
 
 == Typical usage ==
 
-Typically, a resource of one type is managed using one interface. Giving one resource to an interface expecting a different type will result in an error. A typical example of a resource interface is `ImageData'. It provides:
+Typically, a resource of one type is managed using one interface. Giving one resource to an interface expecting a different type will result in an error. A typical example of a resource interface is `ImageData`. It provides:
 
-  * A `Create' function to create an image resource. The returned resources automatically has a reference count of 1. The plugin is responsible for eventually calling `PPB_Core.ReleaseResource' to release this reference. On error, the creation function will return a resource with a 0 `id', which is an invalid resource handle.
+  * A `Create` function to create an image resource. The returned resources automatically has a reference count of 1. The plugin is responsible for eventually calling `PPB_Core.ReleaseResource` to release this reference. On error, the creation function will return a resource with a 0 `id`, which is an invalid resource handle.
 
-  * An `IsImageData' function to querying the type of a resource. The browser internally maintains a type for each resource, although the `PP_Resource' struct does not carry an inherent type. In normal usage, a plugin will know the type of its resources since it will have created them, but in some cases, such as for debugging purposes, a plugin will want to check the type.
+  * An `IsImageData` function to querying the type of a resource. The browser internally maintains a type for each resource, although the `PP_Resource` struct does not carry an inherent type. In normal usage, a plugin will know the type of its resources since it will have created them, but in some cases, such as for debugging purposes, a plugin will want to check the type.
 
-  * Then the interface will contain functions specifically for working with resources of that type. These functions will generally fail if provided a `PP_Resource' identifying a non-`ImageData' object.
+  * Then the interface will contain functions specifically for working with resources of that type. These functions will generally fail if provided a `PP_Resource` identifying a non-`ImageData` object.
