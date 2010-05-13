@@ -4,7 +4,7 @@
 
 The lowest level of the API is the C API, which is declared in the header files in [http://code.google.com/p/ppapi/source/browse/trunk/c ppapi/c]. This represents the lowest level binary interface between a plugin and the browser.
 
-For convenience, a simple C++ wrapper is provided in [[http://code.google.com/p/ppapi/source/browse/trunk/cpp ppapi/cpp] for managing many of the basic tasks of writing a plugin. Most plugin authors will want to use this wrapper if you're using C++. It is written strictly on top of the C API and all the source code will be contained in your plugin. The C++ wrapper is not a binary interface to the browser.
+For convenience, a simple C++ wrapper is provided in [http://code.google.com/p/ppapi/source/browse/trunk/cpp ppapi/cpp] for managing many of the basic tasks of writing a plugin. Most plugin authors will want to use this wrapper if you're using C++. It is written strictly on top of the C API and all the source code will be contained in your plugin. The C++ wrapper is not a binary interface to the browser.
 
 = Interfaces =
 
