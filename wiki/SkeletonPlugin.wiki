@@ -1,0 +1,33 @@
+#summary One-sentence summary of this page.
+
+= A Skeleton Program using the C API =
+
+A basic plugin must implement three functions:
+
+<pre>
+PP_Module g_module_id;
+PPB_GetInterface g_get_browser_interface = NULL;
+
+PP_EXPORT int PPP_InitializeModule(PP_Module module_id,
+                                   PPB_GetInterface get_browser_interface) {
+  // Save the parameters for later.
+  g_module_id = module_id;
+  g_get_browser_interface = get_browser_interface;
+
+  // Returning 0 indicates success.
+  return 0;
+}
+
+PP_EXPORT void PPP_ShutdownModule() {
+}
+
+PP_EXPORT const void* PPP_GetInterface(const char* interface_name) {
+  // You will normally implement a getter for at least PPP_INSTANCE_INTERFACE here.
+  return NULL;
+}</pre>
+
+
+
+= A Skeleton Program using the C++ API =
+
+The C++ API takes care of exporting the three functions above.
