@@ -1,5 +1,11 @@
 #summary Important concepts for working with PPAPI.
 
+= Levels of the API =
+
+The lowest level of the API is the C API, which is declared in the header files in [http://code.google.com/p/ppapi/source/browse/trunk/c ppapi/c]. This represents the lowest level binary interface between a plugin and the browser.
+
+For convenience, a simple C++ wrapper is provided for managing many of the basic tasks of writing a plugin. Most plugin authors will want to use this wrapper if you're using C++. It is written strictly on top of the C API and all the source code will be contained in your plugin. The C++ wrapper is not a binary interface to the browser.
+
 = Interfaces =
 
 The basic concept of PPAPI is the _interface._ In C, this is just a collection of function pointers associated with some similar concept. Interfaces are identified by a name, and should remain stable over time. If additions are necessary in the future, they can be added by creating a "Interface2" with the additions.
@@ -7,6 +13,14 @@ The basic concept of PPAPI is the _interface._ In C, this is just a collection o
 This scheme allows the browser and the plugin to implement different capabilities and versions of interfaces over time. For example, a plugin may want clipboard functionality provided on a `Clipboard` interface. If the browser supports working with the clipboard, it will return a pointer to the associated function pointers when queried with the interface name. If it doesn't support such operations, it will return NULL and the plugin will have to degrade. Likewise, a plugin may prefer a newer function on a `Clipboard2` interface. When run under an older browser, only `Clipboard` might be available and the plugin will have to make do.
 
 Both the plugin and the browser expose a `void* GetInterface(const char* name)` function for the other to call to access functionality.
+
+= Naming =
+
+The prefix "PP" is used to help prevent naming collisions, which stands for "Pepper Plugin." Common structs have have a `PP_` prefix, for example, `PP_Var` for representing a JS variable, or `PP_Rect` for describing a rectangle.
+
+Interfaces are named according to who implements them. Interfaces implemented by the browser are prefixed by "PPB" where "B" stands for _browser_. Interfaces implemented by the plugin are prefixed by "PPP" where "P" stands for _plugin_. Examples include the `PPB_Core` interface which is a collection of core interfaces implemented by the browser and used by the plugin, and the `PPP_Class` interface which the plugin implements to provide JavaScript accessible classes.
+
+In some cases, there might be browser and plugin side for the same concept. For example, `PPP_Instance` represents the plugin functions the browser calls related to a certain instance. This interface is how things like mouse click events are delivered to the plugin. On the other side, the plugin will call `PPB_Instance` which the browser implements to allow the plugin to manipulate its instance.
 
 = Loading and identifying a plugin =
 
