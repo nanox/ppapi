@@ -1,0 +1,15 @@
+#summary 2D painting model overview
+
+= Introduction =
+
+Most window systems and previous browser plugin rendering models use an invalidation model where the browser or window system notifies the plugin or application when a region has been exposed. PPAPI uses a retained mode where the browser always maintains an internal backing store for the plugin representing the last painted image.
+
+This mode is important because PPAPI plugins are expected to be run in separate processes from the browser. Retained mode allows the browser to paint parts of the page without requiring locking or cross-process communication, while the plugin is simultaneously generating a new image in the background.
+
+= Basic usage overview =
+
+  # Create a {{{DeviceContext2D}}} and bind it to your plugin instance.
+  # Create an {{{ImageData}}} to hold painted bits.
+  # Call {{{PaintImageData}}} or {{{ReplaceContents}}} to copy your bits to the backing store.
+  # Call {{{Flush}}} to flush the updates to the screen.
+  # Wait for the flush callback before painting a new frame.
