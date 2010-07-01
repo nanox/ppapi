@@ -6,6 +6,8 @@ Most window systems and previous browser plugin rendering models use an invalida
 
 This mode is important because PPAPI plugins are expected to be run in separate processes from the browser. Retained mode allows the browser to paint parts of the page without requiring locking or cross-process communication, while the plugin is simultaneously generating a new image in the background.
 
+There is no way to access the internal backing store except through the 2D device API. The browser may use the backing store to paint at any time. If the plugin could write directly to the backing store, the browser might paint partial updates which would cause visual artifacts.
+
 = Basic usage overview =
 
   # Create a {{{DeviceContext2D}}} and bind it to your plugin instance.
@@ -20,6 +22,7 @@ See also:
 
   * C API header files for [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_image_data.h ImageData]
   * C++ API header files for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/cpp/image_data.h ImageData]
+  * Simple animation plugin TODO(brettw) write this!
 
 === Flushing ===
 
@@ -38,3 +41,13 @@ Some types of plugins may update the entire plugin area for every frame (for exa
 You can avoid this extra copy by replacing the contents of the backing store with a new {{{ImageData}}} object that you supply. After calling {{{ReplaceContents}}} the image you supply will be used as the new backing store for the device. The limitations of this approach are that your image must be sized exactly the same as the device's existing backing store, and that the plugin will no longer have access to the bitmap once it is owned by the device. Once the backing store has been replaced, you can use any device function to manipulate the contents including calling {{{ReplaceContents}}} again, or updating only portions of the device using {{{PaintImageData}}}.
 
 If you are using {{{ReplaceContents}}}, you allocate a new {{{ImageData}}} each time you want to paint. The intent is that when you do a replace, the browser can cache the old backing store image and supply it back to you if you request an image of the same size. If you set {{{init_to_zero}}} to false when allocating the image, the browser doesn't even need to clear the old image. Painting in this mode is as efficient as a swap operation while giving the browser a little extra flexibility to allocate a new image if the sizes don't match, or to throw away the cached image if memory is low. Since the browser may choose to reallocate the image, you can not count on receiving the old contents of the device in the next image data allocation.
+
+= Managing invalid rects =
+
+Many applications are convenient to write using the "invalid region" mode where the application generates invalid rectangles and expects the system to call it back with all invalid regions when the application returns to the message loop.
+
+To support this type of applications, the C++ wrapper provides a {{{PaintAggregator}}} convenience object that collects dirty rectangles and scroll requests and supplies an aggregated set of scrolls and paints to actually update the screen. Typical usage is as follows:
+
+   # Keep a {{{pp::PaintAggregator}}} object associated with your plugin instance.
+   # When your application runs, call {{{InvalidateRect}}} and {{{ScrollRect}}} on the aggregator as needed.
+   # When you are ready to paint call {{{GetPendingUpdate}}} to get the list of scroll and paint requests to actually execute. These instructions are similar to a "Paint" request from a typical operating system.
