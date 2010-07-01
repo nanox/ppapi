@@ -13,3 +13,14 @@ This mode is important because PPAPI plugins are expected to be run in separate 
   # Call {{{PaintImageData}}} or {{{ReplaceContents}}} to copy your bits to the backing store.
   # Call {{{Flush}}} to flush the updates to the screen.
   # Wait for the flush callback before painting a new frame.
+
+= Device context details =
+
+
+=== Optimized updating of the entire frame ===
+
+Some types of plugins may update the entire plugin area for every frame (for example, a video player). In this case, using {{{PaintImageData}}} requires an extra copy to copy the data from the {{{ImageData}}} to the backing store of the device.
+
+You can avoid this extra copy by replacing the contents of the backing store with a new {{{ImageData}}} object that you supply. After calling {{{ReplaceContents}}} the image you supply will be used as the new backing store for the device. The limitations of this approach are that your image must be sized exactly the same as the device's existing backing store, and that the plugin will no longer have access to the bitmap once it is owned by the device. Once the backing store has been replaced, you can use any device function to manipulate the contents including calling {{{ReplaceContents}}} again, or updating only portions of the device using {{{PaintImageData}}}.
+
+If you are using {{{ReplaceContents}}}, you allocate a new {{{ImageData}}} each time you want to paint. The intent is that when you do a replace, the browser can cache the old backing store image and supply it back to you if you request an image of the same size. If you set {{{init_to_zero}}} to false when allocating the image, the browser doesn't even need to clear the old image. Painting in this mode is as efficient as a swap operation while giving the browser a little extra flexibility to allocate a new image if the sizes don't match, or to throw away the cached image if memory is low. Since the browser may choose to reallocate the image, you can not count on receiving the old contents of the device in the next image data allocation.
