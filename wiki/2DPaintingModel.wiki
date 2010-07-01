@@ -16,6 +16,10 @@ This mode is important because PPAPI plugins are expected to be run in separate 
 
 = Device context details =
 
+See also:
+
+  * C API header files for [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_image_data.h ImageData]
+  * C++ API header files for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/cpp/image_data.h ImageData]
 
 === Flushing ===
 
@@ -23,7 +27,7 @@ None of the update operations take effect until {{{Flush}}} is called. This allo
 
 A flush is complete when the bits have actually been copied to the screen. This means that the backing store of the device has been updated, and also that it has been composited with the page and displayed to the user. This allows the plugin to rate limit the number of updates it provides to the rate that can be copied to the screen. Since the plugin can generate paint messages asynchronously with the browser, if this didn't happen, the plugin could get significantly ahead of the browser in generating paints.
 
-<dd>_Advanced note:_ A complete flush doesn't literally mean that the bits are on the screen, only that they're "on the way." A browser like Chrome can use this to overlap generating of the next frame with the update of the screen, while also preventing the plugin from getting more than one frame behind.</dd>
+<blockquote>_Advanced note:_ A complete flush doesn't literally mean that the bits are on the screen, only that they're "on the way." A browser like Chrome can use this to overlap generating of the next frame with the update of the screen, while also preventing the plugin from getting more than one frame behind.</blockquote>
 
 The application can run is synchronous or asynchronous flush mode. Asynchronous flush mode will notify the application that the flush has completed via a callback. Synchronous flush mode will block the caller until the Flush has been completed. Synchronous flush mode can only be used when running on a background thread. If a plugin's main thread could block on a flush call, it could not respond to input events which could cause a deadlock.
 
