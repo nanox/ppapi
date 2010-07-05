@@ -5,7 +5,7 @@
 
 It is possible to provide a backend implementation of a {{{PP_Var}}} in native code that can be called from !JavaScript (or potentially other plugins). Calls to functions or to set and get properties will call through to functions you implement on your plugin's main thread.
 
-In the C API, you provide an implementation of the interface {{{PPP_Class}}} and pass a pointer to your class to the {{{PPB_Var.CreateObject}}} function to actually create the object. In the C++ API, just inherit from {{{pp::ScriptableObject}}} and implement the virtual functions of that class. To convert your scriptable object to a var, just call the {{pp::Var}} constructor with a pointer to your object:
+In the C API, you provide an implementation of the interface {{{PPP_Class}}} and pass a pointer to your class to the {{{PPB_Var.CreateObject}}} function to actually create the object. In the C++ API, just inherit from {{{pp::ScriptableObject}}} and implement the virtual functions of that class. To convert your scriptable object to a var, just call the {{{pp::Var}}} constructor with a pointer to your object:
 
 {{{
 class MyObject : public pp::ScriptableObject {
@@ -22,3 +22,8 @@ You can now use your custom {{{pp::Var}}} just like any other in the system. You
 === The plugin "instance object" ===
 
 If you want to allow JavaScript on the page to call into your plugin, you expose an object that represents the plugin instance. In the C API, this is returned by the {{{PPP_Instance.GetInstanceObject}}} function implemented by the plugin. In the C++ API, just implement the virtual function {{{pp::Instance::GetInstanceObject}}}.
+
+=== See also ===
+
+  * The header file for the C interface [http://code.google.com/p/ppapi/source/browse/trunk/c/ppp_class.h PPP_Class].
+  * The header file for the C++ wrapper [http://code.google.com/p/ppapi/source/browse/trunk/cpp/scriptable_object.h ScriptableObject].
