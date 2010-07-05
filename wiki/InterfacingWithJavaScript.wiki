@@ -26,6 +26,12 @@ As a result, a plugin should not assume that a particular numeric value is an in
 
 A string is a sequence of UTF-8 characters. It is reference counted as described above. A C plugin can create a new string using `PPB_Var.VarFromUtf8` and get the string associated with a var using `PPB_Var.VartoUtf8`. A C++ plugin can just use the string constructor of {{{pp::Var}}}.
 
+After creating a string, your input can be discarded, the string will be copied by the browser into an internal object. To modify it, you need to assign a new string.
+
+_Warning:_ Since a {{{pp::Var}}} is a reference to a reference counted object in the browser, copying a {{{pp::Var}}} representing a string corresponds to just taking another reference to the same underlying string. In particular, it is _not_ copy-on-write and assigning the value to one reference will update the values of all references to the same string.
+
+Because of this, plus the additional overhead of creating a {{{pp::Var}}} and the fact that a var can represent many other types, it is generally recommended that you use your own string class (such as {{{std::string}}}), and only use {{{pp::Var}}} when interfacing with the plugin API.
+
 == Objects in PP_Var ==
 
 Objects in variants are references to !JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object. In C++, the {{{pp::Var}}} interface contains all the manipulation functions.
