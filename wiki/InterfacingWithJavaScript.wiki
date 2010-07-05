@@ -1,5 +1,22 @@
 #summary How to interface back and forth between a plugin and `JavaScript`.
 
+= Overview =
+
+A {{{PP_Var}}} (in the C API) or a {{{pp::Var}}} (in the C++ API) represents an object for binding to !JavaScript or the DOM. It can represent boolean types, numeric values, strings, and generic !JavaScript-type objects. It can be most convenient to think of a var as a !JavaScript variable, which doesn't have a predefined type associated with it.
+
+=== Var lifetimes ===
+
+A var containing a string or an object is reference counted, with the object itself residing inside the browser. When the reference count reaches 0, the string or object will be freed. A C plugin uses the functions `PPB_Var.AddRef` and `PPB_Var.Release` to take and release references.
+
+It is legal to call `AddRef` and `Release` on any type of var. But since boolean and numeric types are "inline" inside the var, there is no extra memory management required.
+
+*Important:* !JavaScript objects can have references to other !JavaScript objects. Keeping a reference to one object can in turn keep many other objects alive. For example, a plugin might have a reference to a simple callback object. But that object may have a reference to an object in the DOM. Keeping the reference to the callback object alive can in turn cause a leak of the entire DOM of the page.
+
+In the C++ API, the {{{pp:Var}}} object acts like a smart pointer. The reference count will be automatically maintained for you, and the object or string will be alive as long as there is a {{{pp::Var}}} referencing it. Copying a {{{pp::Var}}} will create another reference to the same underlying object.
+
+= Accessing a Var =
+
+
 
 = Implementing !JavaScript-accessible objects =
 
