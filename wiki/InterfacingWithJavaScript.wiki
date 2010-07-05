@@ -1,1 +1,24 @@
-#summary How to interface back and forth between a plugin and JavaScript.
+#summary How to interface back and forth between a plugin and `JavaScript`.
+
+
+= Implementing !JavaScript-accessible objects =
+
+It is possible to provide a backend implementation of a {{{PP_Var}}} in native code that can be called from !JavaScript (or potentially other plugins). Calls to functions or to set and get properties will call through to functions you implement on your plugin's main thread.
+
+In the C API, you provide an implementation of the interface {{{PPP_Class}}} and pass a pointer to your class to the {{{PPB_Var.CreateObject}}} function to actually create the object. In the C++ API, just inherit from {{{pp::ScriptableObject}}} and implement the virtual functions of that class. To convert your scriptable object to a var, just call the {{pp::Var}} constructor with a pointer to your object:
+
+{{{
+class MyObject : public pp::ScriptableObject {
+  ...
+};
+
+pp::Var MakeMyObject() {
+  return pp::Var(new MyObject());
+}
+}}}
+
+You can now use your custom {{{pp::Var}}} just like any other in the system. You can call functions on it, get and set properties, and return it as the result of other functions for use by !JavaScript and other plugins. The lifetime of your object will be bound to the lifetime of the var, which is reference counted by the browser. When there are no more references to the object, the object's destructor will automatically be called; you don't need to do anything special to manage the lifetime of your object.
+
+=== The plugin "instance object" ===
+
+If you want to allow JavaScript on the page to call into your plugin, you expose an object that represents the plugin instance. In the C API, this is returned by the {{{PPP_Instance.GetInstanceObject}}} function implemented by the plugin. In the C++ API, just implement the virtual function {{{pp::Instance::GetInstanceObject}}}.
