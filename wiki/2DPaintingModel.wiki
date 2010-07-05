@@ -48,8 +48,8 @@ The application can run is synchronous or asynchronous flush mode. Asynchronous 
 
 === See also ===
 
-  * C API header files for [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_image_data.h ImageData]
-  * C++ API header files for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/cpp/image_data.h ImageData]
+  * C API header files for [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_image_data.h ImageData].
+  * C++ API header files for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/cpp/image_data.h ImageData].
   * Simple animation plugin TODO(brettw) write this!
 
 = Managing invalid rects with the {{{PaintManager}}} =
@@ -67,5 +67,5 @@ The paint manager will automatically handle calling {{{Flush}}} for you and list
 
 === See also ===
 
-  * The header file for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/paint_manager.h PaintManager]
-  * [http://code.google.com/p/ppapi/source/browse/trunk/examples/2d/paint_manager_example.cc Example plugin using the paint manager]
+  * The header file for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/paint_manager.h PaintManager].
+  * [http://code.google.com/p/ppapi/source/browse/trunk/examples/2d/paint_manager_example.cc Example plugin] using the paint manager.
