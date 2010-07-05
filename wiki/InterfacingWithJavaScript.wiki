@@ -79,8 +79,6 @@ This var's type and contents will be dependent on the type of error received. So
 
 Properties in !JavaScript can be either string identifiers or numbers. Strings are used for most properties, but numeric properties are how arrays are implemented. For example, {{{foo[0]}}} in !JavaScript is equivalent to {{{foo.GetProperty(pp::Var(0));}}}. Attempting to access properties with any non-integer or non-string identifiers will fail.
 
-
-
 = Implementing !JavaScript-accessible objects =
 
 It is possible to provide a backend implementation of a {{{PP_Var}}} in native code that can be called from !JavaScript (or potentially other plugins). Calls to functions or to set and get properties will call through to functions you implement on your plugin's main thread.
