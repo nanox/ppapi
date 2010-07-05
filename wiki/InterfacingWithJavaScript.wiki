@@ -14,6 +14,20 @@ It is legal to call `AddRef` and `Release` on any type of var. But since boolean
 
 In the C++ API, the {{{pp:Var}}} object acts like a smart pointer. The reference count will be automatically maintained for you, and the object or string will be alive as long as there is a {{{pp::Var}}} referencing it. Copying a {{{pp::Var}}} will create another reference to the same underlying object.
 
+=== Numbers in PP_Var ===
+
+!JavaScript does not distinguish between floating point numbers an integers. In practice, !JavaScript libraries implement types as an optimization, but particular behavior is not guaranteed, and the type (double vs. int) may depend on the sequence of operations used to compute the value.
+
+As a result, a plugin should not assume that a particular numeric value is an integer or a double, but should be prepared to handle results in either type and convert as necessary.
+
+=== Strings in PP_Var ===
+
+A string is a sequence of UTF-8 characters. It is reference counted as described above. A plugin can create a new string using `PPB_Var.VarFromUtf8` and get the string associated with a var using `PPB_Var.VartoUtf8`.
+
+=== Objects in PP_Var ===
+
+Objects in variants are references to !JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object.
+
 = Accessing a Var =
 
 
