@@ -16,13 +16,13 @@ In the C++ API, the {{{pp:Var}}} object acts like a smart pointer. The reference
 
 = Accessing a Var =
 
-== Numbers in PP_Var ==
+== Numbers ==
 
 !JavaScript does not distinguish between floating point numbers an integers. In practice, !JavaScript libraries implement types as an optimization, but particular behavior is not guaranteed, and the type (double vs. int) may depend on the sequence of operations used to compute the value.
 
 As a result, a plugin should not assume that a particular numeric value is an integer or a double, but should be prepared to handle results in either type and convert as necessary. The C++ wrapper attempts to make this handling a little easier by automatically converting between integers and doubles and providing an {{{is_number}}} call that you can use to check if the type is either an integer or a double.
 
-== Strings in PP_Var ==
+== Strings ==
 
 A string is a sequence of UTF-8 characters. It is reference counted as described above. A C plugin can create a new string using `PPB_Var.VarFromUtf8` and get the string associated with a var using `PPB_Var.VartoUtf8`. A C++ plugin can just use the string constructor of {{{pp::Var}}}.
 
@@ -38,13 +38,38 @@ b = "goodbye";        // BOTH b and a are now "goodbye".
 
 Because of this, plus the additional overhead of creating a {{{pp::Var}}} and the fact that a var can represent many other types, it is generally recommended that you use your own string class (such as {{{std::string}}}), and only use {{{pp::Var}}} when interfacing with the plugin API.
 
-== Objects in PP_Var ==
+== Objects ==
 
-Objects in variants are references to !JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object. In C++, the {{{pp::Var}}} interface contains all the manipulation functions.
+Objects in variants are references to !JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object. In C++, the {{{pp::Var}}} interface contains all the manipulation functions. These functions are valid when the var type is {{{PP_VarType_Object}}}. If the var is any other type, the functions will fail and throw an exception.
+
+=== Error handling ===
+
+Any method on an object might fail. In !JavaScript, this is indicated by an exception. Exceptions are passed through the object interface as output parameters to each function. If you are not interested in exception information, you can pass {{{NULL}}} (in C++ this argument has a default value of {{{NULL}}} so you can omit it if desired).
+
+When you pass the address of a var to receive the exception, you must initialize it to a "void" type (the default {{{pp::Var()}}} constructor does this for you). If there was an exception after an operation, the var's type will no longer be null.
+
+All methods will check the exception argument, if given to see if it is of non-void type. If it is non-void, they will immediately return without doing anything. This behavior allows you to perform a sequence of calls without doing individual checks for each calls, and then checking whether the sequence succeeded or failed at the end. Doing this can clean up the calling code quite a bit in cases where you don't specifically expect an error.
+
+Here is an example of code where you wouldn't necessarily expect any calls to fail, and you merely want to do a sanity check at the end to see if there was a problem. The exception will always contain the first exception hit, and no other var operations using that exception will have any effect.
+
+{{{
+pp::Var exception;  // Use initial "void" var for exception;
+pp::Var window = GetWindowObject();
+pp::Var doc = window.GetProperty("document", &exception);
+pp::Var my_element = doc.Call("getElementById", "myelt", &exception);
+my_element.SetProperty("innerHTML", "Hello, world", &exception);
+
+if (!exception.is_void())
+  return false;  // One of the above functions failed.
+}}}
+
+This var's type and contents will be dependent on the type of error received. Some basic usage errors (like trying to access a property on a numeric value) will throw string exceptions containing a description of what went wrong. Most errors will throw objects just like in !JavaScript.
 
 === Getting and setting properties ===
 
-Properties in !JavaScript can be either string identifiers or numbers. 
+Properties in !JavaScript can be either string identifiers or numbers. Strings are used for most properties, but numeric properties are how arrays are implemented. For example, {{{foo[0]}}} in !JavaScript is equivalent to {{{foo.GetProperty(pp::Var(0));}}}. Attempting to access properties with any non-integer or non-string identifiers will fail.
+
+
 
 = Implementing !JavaScript-accessible objects =
 
