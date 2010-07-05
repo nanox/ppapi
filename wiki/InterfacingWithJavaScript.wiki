@@ -14,23 +14,25 @@ It is legal to call `AddRef` and `Release` on any type of var. But since boolean
 
 In the C++ API, the {{{pp:Var}}} object acts like a smart pointer. The reference count will be automatically maintained for you, and the object or string will be alive as long as there is a {{{pp::Var}}} referencing it. Copying a {{{pp::Var}}} will create another reference to the same underlying object.
 
-=== Numbers in PP_Var ===
+= Accessing a Var =
+
+== Numbers in PP_Var ==
 
 !JavaScript does not distinguish between floating point numbers an integers. In practice, !JavaScript libraries implement types as an optimization, but particular behavior is not guaranteed, and the type (double vs. int) may depend on the sequence of operations used to compute the value.
 
 As a result, a plugin should not assume that a particular numeric value is an integer or a double, but should be prepared to handle results in either type and convert as necessary.
 
-=== Strings in PP_Var ===
+== Strings in PP_Var ==
 
-A string is a sequence of UTF-8 characters. It is reference counted as described above. A plugin can create a new string using `PPB_Var.VarFromUtf8` and get the string associated with a var using `PPB_Var.VartoUtf8`.
+A string is a sequence of UTF-8 characters. It is reference counted as described above. A C plugin can create a new string using `PPB_Var.VarFromUtf8` and get the string associated with a var using `PPB_Var.VartoUtf8`. A C++ plugin can just use the string constructor of {{{pp::Var}}}.
 
-=== Objects in PP_Var ===
+== Objects in PP_Var ==
 
-Objects in variants are references to !JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object.
+Objects in variants are references to !JavaScript-accessible objects. You can use the `PPB_Var` interface to call functions and manipulate properties on the object. In C++, the {{{pp::Var}}} interface contains all the manipulation functions.
 
-= Accessing a Var =
+=== Getting and setting properties ===
 
-
+Properties in !JavaScript can be either string identifiers or numbers. 
 
 = Implementing !JavaScript-accessible objects =
 
@@ -52,9 +54,11 @@ You can now use your custom {{{pp::Var}}} just like any other in the system. You
 
 === Properties ===
 
-As discussed above, properties can be either strings or integers. Most plugins probably won't support arrays and will only implement string properties. However, you should be careful to check the type of the property name when responding to get/set/has property since it can be an integer.
+As discussed in "getting and setting properties" above, properties can be either strings or integers. Most plugins probably won't need to support arrays and will only implement string properties. However, you should be careful to check the type of the property name when responding to get/set/has property since it can be an integer.
 
 If you have a property, be sure to not only implement the getter and setter, but also respond go {{{HasProperty}}} accordingly, and include your property name in response to {{{GetAllProperties}}}. Forgetting to do this can lead to unexpected behavior.
+
+If you do support numeric properties for array operations, be careful with the types. In !JavaScript, you can say {{{object[0] = 1;}}} or use a string representation of the number {{{object["0"] = 1;}}}. These are semantically equivalent, but your get/set property implementation will be called with a var of type number in the first case, but a var of type string in the second. Although in most cases, you will be called with an integer and your array access can be very efficient, be sure to check for numbers passed as strings and treat them the same.
 
 === Error handling ===
 
