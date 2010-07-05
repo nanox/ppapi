@@ -19,9 +19,20 @@ pp::Var MakeMyObject() {
 
 You can now use your custom {{{pp::Var}}} just like any other in the system. You can call functions on it, get and set properties, and return it as the result of other functions for use by !JavaScript and other plugins. The lifetime of your object will be bound to the lifetime of the var, which is reference counted by the browser. When there are no more references to the object, the object's destructor will automatically be called; you don't need to do anything special to manage the lifetime of your object.
 
+=== Properties ===
+
+=== Error handling ===
+
+Each function on the {{{PPP_Class}}}/{{{pp::ScriptableObject}}} has an out parameter corresponding to the exception. If you set this value to a non-void var, it will correspond to throwing an exception in !JavaScript (or, for PPAPI plugins, being passed up to the caller as the exception through the var interface). If you don't encounter an error, just don't write to the exception pointer.
+
+When calling an object, you can specify a null exception (the C++ wrapper uses a null default argument to allow it to be optional). However, when implementing an object, this exception will never be null. The browser will always create an exception object, and just won't pass it "up" the stack if the caller isn't interested.
+
+Likewise, when manipulating an object, you can expect that the function won't do anything if the exception is non-void (see above). From the object implementation side, you don't need to worry about this behavior. Before calling into your implemention, the browser will check the exception passed in by the caller and will immediately return if the exception is non-void.
+
+
 === The plugin "instance object" ===
 
-If you want to allow JavaScript on the page to call into your plugin, you expose an object that represents the plugin instance. In the C API, this is returned by the {{{PPP_Instance.GetInstanceObject}}} function implemented by the plugin. In the C++ API, just implement the virtual function {{{pp::Instance::GetInstanceObject}}}.
+If you want to allow !JavaScript on the page to call into your plugin, you expose an object that represents the plugin instance. In the C API, this is returned by the {{{PPP_Instance.GetInstanceObject}}} function implemented by the plugin. In the C++ API, just implement the virtual function {{{pp::Instance::GetInstanceObject}}}.
 
 === See also ===
 
