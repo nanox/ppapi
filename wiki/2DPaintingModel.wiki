@@ -22,12 +22,6 @@ Note that PPAPI doesn't include a 2D graphics library. The most the API provides
 
 = Device context details =
 
-See also:
-
-  * C API header files for [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_image_data.h ImageData]
-  * C++ API header files for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/cpp/image_data.h ImageData]
-  * Simple animation plugin TODO(brettw) write this!
-
 === Simple operations ====
 
 The most basic operation is {{{PaintImageData}}} which copies pixels from an {{{ImageData}}} you supply to the backing store. You can update all or part of the plugin image using this function. Note that the pixels are not actually copied until you call {{{Flush}}}.
@@ -52,6 +46,12 @@ A flush is complete when the bits are sent to the screen. A callback when this f
 
 The application can run is synchronous or asynchronous flush mode. Asynchronous flush mode will notify the application that the flush has completed via a callback. Synchronous flush mode will block the caller until the Flush has been completed. Synchronous flush mode can only be used when running on a background thread. If a plugin's main thread could block on a flush call, it could not respond to input events which could cause a deadlock.
 
+=== See also ===
+
+  * C API header files for [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/c/ppb_image_data.h ImageData]
+  * C++ API header files for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/device_context_2d.h DeviceContext2D] and [http://code.google.com/p/ppapi/source/browse/trunk/cpp/image_data.h ImageData]
+  * Simple animation plugin TODO(brettw) write this!
+
 = Managing invalid rects with the {{{PaintManager}}} =
 
 Some applications are inconvenient to write using immediate mode painting. In these cases, a better model is to request invalidates for dirty regions of the plugin, and to get a callback when it's a "good time" to paint. This mode is generally what authors of client applications, such as on Microsoft Windows, use.
@@ -64,3 +64,8 @@ To support this type of application, the PPAPI C++ wrapper provides a {{{PaintMa
    # Implement an {{{OnPaint}}} handler to process the batched updates.
 
 The paint manager will automatically handle calling {{{Flush}}} for you and listening for the flush complete callback before doing another paint. It will also aggregate the dirty rectangles in an intelligent way using the {{{pp::PaintAggregator}}} object. In your paint handler, you have the option to either generate a new image for the union of all dirty regions, or to paint the specific dirty regions individually (the aggregator ensures these won't overlap).
+
+=== See also ===
+
+  * The header file for [http://code.google.com/p/ppapi/source/browse/trunk/cpp/paint_manager.h PaintManager]
+  * [http://code.google.com/p/ppapi/source/browse/trunk/examples/2d/paint_manager_example.cc Example plugin using the paint manager]
