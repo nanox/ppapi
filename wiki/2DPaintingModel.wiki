@@ -18,6 +18,8 @@ There is no way to access the internal backing store except through the 2D devic
   # Call {{{Flush}}} to apply the updates.
   # Wait for the flush callback before painting a new frame.
 
+Note that PPAPI doesn't include a 2D graphics library. The most the API provides is a bitmap in a certain format that the plugin is responsible for writing into. If you want advanced 2D graphics generation, you will need to link a graphics library with your plugin such as [[http://cairographics.org/ Cairo]] or [[http://code.google.com/p/skia/ Skia]].
+
 = Device context details =
 
 See also:
