@@ -37,7 +37,7 @@ This example shows how to do error handling to implement a function call to impl
 pp::Var MyObject::Call(const pp::Var& method_name,
                        const std::vector<pp::Var>& args,
                        pp::Var* exception) {
-  if (method_name == "doSomethingAwesome") {
+  if (method_name.is_string() && method_name == "doSomethingAwesome") {
     if (args.size() != 1 || !args[0].is_number()) {
       // Error, we expect a number as the argument.
       *exception = pp::Var("Error calling doSomethingAwesome, you must pass exactly one number");
