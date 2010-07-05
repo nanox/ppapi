@@ -30,6 +30,12 @@ After creating a string, your input can be discarded, the string will be copied 
 
 _Warning:_ Since a {{{pp::Var}}} is a reference to a reference counted object in the browser, copying a {{{pp::Var}}} representing a string corresponds to just taking another reference to the same underlying string. In particular, it is _not_ copy-on-write and assigning the value to one reference will update the values of all references to the same string.
 
+{{{
+pp::Var a = "hello";
+pp::Var b = a;        // b references a's "hello".
+b = "goodbye";        // BOTH b and a are now "goodbye".
+}}}
+
 Because of this, plus the additional overhead of creating a {{{pp::Var}}} and the fact that a var can represent many other types, it is generally recommended that you use your own string class (such as {{{std::string}}}), and only use {{{pp::Var}}} when interfacing with the plugin API.
 
 == Objects in PP_Var ==
