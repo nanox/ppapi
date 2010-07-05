@@ -21,6 +21,10 @@ You can now use your custom {{{pp::Var}}} just like any other in the system. You
 
 === Properties ===
 
+As discussed above, properties can be either strings or integers. Most plugins probably won't support arrays and will only implement string properties. However, you should be careful to check the type of the property name when responding to get/set/has property since it can be an integer.
+
+If you have a property, be sure to not only implement the getter and setter, but also respond go {{{HasProperty}}} accordingly, and include your property name in response to {{{GetAllProperties}}}. Forgetting to do this can lead to unexpected behavior.
+
 === Error handling ===
 
 Each function on the {{{PPP_Class}}}/{{{pp::ScriptableObject}}} has an out parameter corresponding to the exception. If you set this value to a non-void var, it will correspond to throwing an exception in !JavaScript (or, for PPAPI plugins, being passed up to the caller as the exception through the var interface). If you don't encounter an error, just don't write to the exception pointer.
