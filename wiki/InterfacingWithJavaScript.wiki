@@ -29,6 +29,8 @@ When calling an object, you can specify a null exception (see above). However, w
 
 Likewise, when manipulating an object, you can expect that the function won't do anything if the exception is non-void (see above). From the object implementation side, you don't need to worry about this behavior. Before calling into your implemention, the browser will check the exception passed in by the caller and will immediately return if the exception is non-void; you won't even see the call from the implementation side. This frees the implementation from having to check the exception for "type void".
 
+When throwing an exception, your return value will be ignored. It is recommended that you return a void var (this is what you get using the default {{{pp::Var()}}} constructor).
+
 This example shows how to do error handling to implement a function call to implement {{{object.doSomethingAwesome(3.14159);}}}.
 
 {{{
