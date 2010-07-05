@@ -20,3 +20,10 @@ Using the C++ wrapper, there is slightly more to the stub program, but it does m
   * A specialization of `pp::Instance` which represents one plugin on a web page.
 
 An example "no op" implementation of these concepts is in [http://code.google.com/p/ppapi/source/browse/trunk/examples/stub/stub.cc examples/stub/stub.cc] in the source repository.
+
+= Next steps =
+
+Once you get a simple plugin loading, you may want to explore:
+
+  * [2DPaintingModel 2D painting]
+  * [InterfacingWithJavaScript Interfacing with JavaScript]
