@@ -63,6 +63,16 @@ if (!exception.is_void())
   return false;  // One of the above functions failed.
 }}}
 
+This code is equivalent to the !JavaScript code:
+
+{{{
+try {
+  window.document.getElementById("myelt").innerHTML = "Hello, world";
+} catch (exception) {
+  return false;
+}
+}}}
+
 This var's type and contents will be dependent on the type of error received. Some basic usage errors (like trying to access a property on a numeric value) will throw string exceptions containing a description of what went wrong. Most errors will throw objects just like in !JavaScript.
 
 === Getting and setting properties ===
