@@ -20,7 +20,7 @@ In the C++ API, the {{{pp:Var}}} object acts like a smart pointer. The reference
 
 !JavaScript does not distinguish between floating point numbers an integers. In practice, !JavaScript libraries implement types as an optimization, but particular behavior is not guaranteed, and the type (double vs. int) may depend on the sequence of operations used to compute the value.
 
-As a result, a plugin should not assume that a particular numeric value is an integer or a double, but should be prepared to handle results in either type and convert as necessary.
+As a result, a plugin should not assume that a particular numeric value is an integer or a double, but should be prepared to handle results in either type and convert as necessary. The C++ wrapper attempts to make this handling a little easier by automatically converting between integers and doubles and providing an {{{is_number}}} call that you can use to check if the type is either an integer or a double.
 
 == Strings in PP_Var ==
 
