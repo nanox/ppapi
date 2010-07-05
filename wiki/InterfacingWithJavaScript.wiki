@@ -25,9 +25,9 @@ You can now use your custom {{{pp::Var}}} just like any other in the system. You
 
 Each function on the {{{PPP_Class}}}/{{{pp::ScriptableObject}}} has an out parameter corresponding to the exception. If you set this value to a non-void var, it will correspond to throwing an exception in !JavaScript (or, for PPAPI plugins, being passed up to the caller as the exception through the var interface). If you don't encounter an error, just don't write to the exception pointer.
 
-When calling an object, you can specify a null exception (the C++ wrapper uses a null default argument to allow it to be optional). However, when implementing an object, this exception will never be null. The browser will always create an exception object, and just won't pass it "up" the stack if the caller isn't interested.
+When calling an object, you can specify a null exception (see above). However, when implementing an object, this exception will never be null. The browser will always create an exception object, and just won't pass it "up" the stack if the caller isn't interested. This frees the implementation from having to null-check the exception object.
 
-Likewise, when manipulating an object, you can expect that the function won't do anything if the exception is non-void (see above). From the object implementation side, you don't need to worry about this behavior. Before calling into your implemention, the browser will check the exception passed in by the caller and will immediately return if the exception is non-void.
+Likewise, when manipulating an object, you can expect that the function won't do anything if the exception is non-void (see above). From the object implementation side, you don't need to worry about this behavior. Before calling into your implemention, the browser will check the exception passed in by the caller and will immediately return if the exception is non-void; you won't even see the call from the implementation side. This frees the implementation from having to check the exception for "type void".
 
 This example shows how to do error handling to implement a function call to implement {{{object.doSomethingAwesome(3.14159);}}}.
 
