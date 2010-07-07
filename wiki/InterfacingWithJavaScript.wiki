@@ -77,7 +77,9 @@ This var's type and contents will be dependent on the type of error received. So
 
 === Getting and setting properties ===
 
-Properties in !JavaScript can be either string identifiers or numbers. Strings are used for most properties, but numeric properties are how arrays are implemented. For example, {{{foo[0]}}} in !JavaScript is equivalent to {{{foo.GetProperty(pp::Var(0));}}}. Attempting to access properties with any non-integer or non-string identifiers will fail.
+Properties include both functions and data members on an object. You can get ({{{GetProperty}}}) and set ({{{SetProperties}}}) properties, query if they exist ({{{HasProperty}}}), and see if a given property is a function that can be called ({{{HasMethod}}}). You can also get a list of all enumerable properties ({{{GetAllPropertyNames}}}) and remove existing ones ({{{RemoveProperty}}}).
+
+Properties in !JavaScript can be either string identifiers or numbers. Strings are used for most properties, but numeric properties are how arrays are implemented. For example, {{{foo[0]}}} in !JavaScript is equivalent to {{{foo.GetProperty(pp::Var(0));}}}. Attempting to access properties with any non-integer or non-string identifiers will fail. In the case of calling functions, only string identifiers are supported.
 
 = Implementing !JavaScript-accessible objects =
 
