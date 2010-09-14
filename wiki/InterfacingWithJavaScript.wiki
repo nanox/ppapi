@@ -78,7 +78,7 @@ This var's type and contents will be dependent on the type of error received. So
 
 Properties include both functions and data members on an object. You can get ({{{GetProperty}}}) and set ({{{SetProperty}}}) properties, query if they exist ({{{HasProperty}}}), and see if a given property is a function that can be called ({{{HasMethod}}}). You can also get a list of all enumerable properties ({{{GetAllPropertyNames}}}) and remove existing ones ({{{RemoveProperty}}}).
 
-Properties in !JavaScript can be either string identifiers or numbers. Strings are used for most properties, but numeric properties are how arrays are implemented. For example, {{{foo[0]}}} in !JavaScript is equivalent to {{{foo.GetProperty(pp::Var(0));}}}. Attempting to access properties with any non-integer or non-string identifiers will fail. In the case of calling functions, only string identifiers are supported.
+Properties in !JavaScript can be named with either string identifiers or numbers. Strings are used for most properties, but numeric properties are how arrays are implemented. For example, {{{foo[0]}}} in !JavaScript is equivalent to {{{foo.GetProperty(pp::Var(0));}}}. Attempting to access properties with any non-integer or non-string identifiers will fail. In the case of calling functions, only string identifiers are supported.
 
 = Implementing !JavaScript-accessible objects =
 
@@ -100,7 +100,7 @@ You can now use your custom {{{pp::Var}}} just like any other in the system. You
 
 === Properties ===
 
-As discussed in "getting and setting properties" above, properties can be either strings or integers. Most plugins probably won't need to support arrays and will only implement string properties. However, you should be careful to check the type of the property name when responding to get/set/has property since it can be an integer.
+As discussed in "getting and setting properties" above, properties can be named with either strings or integers. Most plugins probably won't need to support arrays and will only implement properties with string names. However, you should be careful to check the type of the property name when responding to get/set/has property since it can be an integer.
 
 If you have a property, be sure to not only implement the getter and setter, but also respond to {{{HasProperty}}} accordingly, and include your property name in response to {{{GetAllPropertyNames}}}. Forgetting to do this can lead to unexpected behavior.
 
