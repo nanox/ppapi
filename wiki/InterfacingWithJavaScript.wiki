@@ -1,3 +1,9 @@
+= This page is deprecated =
+
+Scripting is no longer supported for plugins. Please see http://src.chromium.org/viewvc/chrome/trunk/src/ppapi/c/ppb_messaging.h?revision=92312&view=markup for how to communicate between a plugin and a page.
+
+<hr>
+
 #summary How to interface back and forth between a plugin and `JavaScript`.
 
 = Overview =
